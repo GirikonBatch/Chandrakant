@@ -1,0 +1,8 @@
+<apex:page standardController="case" extensions="ArchiveExtension">
+  <apex:form >
+  <b>
+  Are you sure you would like to Process ,click on YES:  </b>
+  <apex:commandButton value="YES" action="{!OnArchive}" />
+  <apex:commandButton value="NO" action="{!DontArchive}"/>
+  </apex:form>
+</apex:page>

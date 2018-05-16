@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>ArchiveExtension</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>ConfirmationPage</members>
+        <members>RestoreConfirmation</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>EmailMessage</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Case-Case Layout</members>
+        <name>Layout</name>
+    </types>
+    <version>42.0</version>
+</Package>
