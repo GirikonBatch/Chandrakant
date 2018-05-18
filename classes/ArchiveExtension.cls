@@ -103,7 +103,7 @@ Attachment att = new Attachment(id='00P7F0000042R7y');//hardcoded for checking
 if(att.name=='Parser0065.txt')
 {
 String bodyContent = att.body.toString();
-System.debug('#######################'+bodyContent);
+System.debug('Chanra#######################'+bodyContent);
 for(String s:bodycontent.split('#%#'))
 {
     lstring.add(s);
