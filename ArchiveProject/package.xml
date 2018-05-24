@@ -2,14 +2,15 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
         <members>ArchiveExtension</members>
+       
         <members>RestoreExtension</members>
         <name>ApexClass</name>
     </types>
     <types>
         <members>ConfirmationPage</members>
+        
         <members>RestoreConfirmation</members>
         <name>ApexPage</name>
     </types>
-    
     <version>42.0</version>
 </Package>
