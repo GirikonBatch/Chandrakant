@@ -19,6 +19,8 @@ Map<id,List<id>> EmailIDAttachmentMap=new Map<id,List<id>>();
 integer i=0;
 List<Attachment> ATTFILES = new List<Attachment>();
 ATTFILES=[Select Id,ParentId,Name,body From Attachment where name like '%Parser.txt' and ParentID=:CaseID]; //use ParentID in:ListCaseID  in bulk
+Map <id,Attachment> AllAttach=new Map<id,Attachment>([Select Id,ParentId,Name,body From Attachment where ParentID=:CaseID]);
+
 for(Attachment at:ATTFILES)
  {
     //Reading Parser File and creating a email corresponding to every parser and fetching attachment ids in parser
@@ -70,28 +72,30 @@ for(integer j=0;j<emailrestore.size();j++)
     System.debug('++++++++++++++++++++++++'+EmailIDAttachmentMap);
     List<Attachment> atmList=new List<Attachment>();
     List<Attachment> atmLis=new List<Attachment>();
-    for(id eid : EmailIDAttachmentMap.keySet() )   // traversing list of inserted email ids in map2
-         {     
-              
-             if(EmailIDAttachmentMap.get(eid) != NULL){
-                 for(attachment attm : [select Body,BodyLength,ContentType,CreatedById,CreatedDate,Description,Id,
-                                            IsDeleted,IsPrivate,LastModifiedById,LastModifiedDate,Name,OwnerId,
-                                            ParentId,SystemModstamp from attachment where id in : EmailIDAttachmentMap.get(eid)])
-            {
-                    
+for(id eid : EmailIDAttachmentMap.keySet() )   // traversing list of inserted email ids in map2
+         {      
+             List<id> atid;
+             if(EmailIDAttachmentMap.get(eid) != NULL)
+             {
+                 atid=new List<id>(EmailIDAttachmentMap.get(eid));// saving a set of ids for specific email id
+             }
+             for(Integer j=0;j<atid.size();j++)
+             {
+                    Attachment At=AllAttach.get(atid[i]);
                     attachment atch = new attachment();
-                    atch.Body = attm.Body;
-                    atch.ContentType = attm.ContentType;
-                    atch.Description = attm.Description;
-                    atch.IsPrivate =  attm.IsPrivate;
-                    atch.Name  = attm.Name.substringAfterLast('_') ;
-                    atch.OwnerId = attm.OwnerId;
+                    atch.Body = At.Body;
+                    atch.ContentType = At.ContentType;
+                    atch.Description = At.Description;
+                    atch.IsPrivate =  At.IsPrivate;
+                    atch.Name  = At.Name.substringAfterLast('_') ;
+                    atch.OwnerId = At.OwnerId;
                     atch.ParentId =eid;
                     atmList.add(atch);  
-                    atmLis.add(attm);                    
-               }
-             }  
-        }
+                    atmLis.add(atch); 
+             }                   
+         }
+               
+    
        
        insert atmList; //inser
        //delete atmLis;
