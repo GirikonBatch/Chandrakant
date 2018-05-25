@@ -14,19 +14,15 @@ return pg;
 }
 
 
-
-
-
-
 public PageReference OnRestore(){
 List<String> atids = new List<String>();
 Map<integer,List<id>> EmailAttachementMap=new Map<integer,List<id>>();
 integer i=0;
-for(Attachment at:[Select Id,ParentId,Name,body From Attachment where name like 'Parser%' and ParentID=:CaseID])
+for(Attachment at:[Select Id,ParentId,Name,body From Attachment where name like '%Parser.txt' and ParentID=:CaseID])
  {
 
 
-    //Reading PArser File and creating a email corresponding to every parser and fetching attachment ids in parser
+    //Reading Parser File and creating a email corresponding to every parser and fetching attachment ids in parser
     String bodyContent = at.body.toString(); //bodyContent is body of parser file
     String[] lstring = bodycontent.split('#%#');
     //system.debug('############################'+ lstring);
@@ -37,12 +33,13 @@ for(Attachment at:[Select Id,ParentId,Name,body From Attachment where name like 
     em.FromAddress=lstring[3];
     em.FromName=lstring[4];
     em.Headers=lstring[5];
-    em.ParentId=CaseID;
-    em.ToAddress=lstring[10];
-    em.Subject=lstring[11];
+    em.ParentId=lstring[6]; // CaseID can also be used but this will help in bulk so it is used
+    em.TextBody=lstring[7];
+    em.ToAddress=lstring[9];
+    em.Subject=lstring[10];
     emailrestore.add(em);
     
-    if(lstring.size()==13)
+    if(lstring.size()==12)
     {
     system.debug('###########IFLOOOPTESTED&&&&&&&&&&&');
     atids = lstring[12].split(';'); //atids contains  attachment ids stored in parser file
