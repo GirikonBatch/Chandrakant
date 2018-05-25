@@ -76,17 +76,17 @@ for( EmailMessage em : emailMap.values())
                      attachment parse = new attachment();
                      parse.ParentId = em.ParentId;
                      parse.Name = em.Counter__c+'_'+em.Subject+'_Parser.txt';
-                     parse.Body =  blob.valueOf('#%#BccAddress='+em.BccAddress+ //1st 
-                                                '#%#CcAddress='+em.CcAddress+ //2nd
-                                                '#%#FromAddress='+em.FromAddress+
-                                                '#%#FromName='+em.FromName+
-                                                '#%#Headers='+em.Headers+
-                                                '#%#ParentId='+em.ParentId+ // 6th ie case id
-                                                '#%#TextBody='+em.TextBody+ //body
-                                                '#%#Status='+em.Status+
-                                                '#%#ToAddress='+em.ToAddress+
-                                                '#%#Subject='+em.Subject+
-                                                '#%#Attachment='+aid);
+                     parse.Body =  blob.valueOf('#%#'+em.BccAddress+ //1st 
+                                                '#%#'+em.CcAddress+ //2nd
+                                                '#%#'+em.FromAddress+
+                                                '#%#'+em.FromName+
+                                                '#%#'+em.Headers+
+                                                '#%#'+em.ParentId+ // 6th ie case id
+                                                '#%#'+em.TextBody+ //body
+                                                '#%#'+em.Status+
+                                                '#%#'+em.ToAddress+
+                                                '#%#'+em.Subject+
+                                                '#%#'+aid);
                      lparser.add(parse);// adding parser files to list for insertion          
                      delemail.add(em);// adding email objects to list for deletion
            
