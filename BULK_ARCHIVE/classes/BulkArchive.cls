@@ -25,6 +25,7 @@ public class BulkArchive{
     list<attachment> lattach = new list<attachment>();  // list to add attachments
     list<attachment> lemailpdf = new list<attachment>();  // list to insert emails
     list<attachment> lparser=new list<attachment>();
+    
     public BulkArchive()
     {
         b=false;
@@ -168,20 +169,138 @@ public class BulkArchive{
         case_created_older=(CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
         case_closed_older=(CaseClosedOlder=='All'? '' : ' AND ClosedDate < LAST_N_DAYS:'+CaseClosedOlder);
         Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
-     System.debug('+++++++++++++++++++++++++asdf'+Query);       
+           
      c = Database.query(Query);
         
     }
     
     
+
+
+    // method call on bulk restore 
     public PageReference RestoreCases() {
+        list<emailMessage> emailRestore= new list<EmailMessage>();
+        List<Attachment> ATTFILES=new List<Attachment>();
+        map <Integer,List<id>> IndexAttachmentMap =new Map<Integer,List<id>>();
+        map<Id,List<id>> EmailIDAttachmentMap=new map<Id,List<id>>();
+        List<String> atids = new List<String>();
+        List<Case> cases=new List<Case>();
+        integer i=0;
+        Query='SELECT AccountId,AssetId,CaseNumber,'+
+            'ClosedDate,ContactEmail,ContactFax,ContactId,ContactMobile,ContactPhone,CreatedById,CreatedDate,'+
+            'Days_Since_Last_Update__c,Description,EngineeringReqNumber__c,Id,IsArchived__c,IsClosed,IsDeleted,'+
+            'IsEscalated,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Origin,OwnerId,ParentId,'+
+            'PotentialLiability__c,Priority,Product__c,Reason,SLAViolation__c,SourceId,Status,Subject,SuppliedCompany,'+
+            'SuppliedEmail,SuppliedName,SuppliedPhone,SystemModstamp,Type FROM Case where IsArchived__c=True';
+        Case_Status=(CaseStatus=='closed'? ' AND IsClosed  = true' : ' And status =  \''+CaseStatus+'\'');
+        case_Origin=(CaseOrigin=='z'? '' : ' AND origin =  \''+CaseOrigin+'\'');
+        case_created_older=(CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
+        case_closed_older=(CaseClosedOlder=='All'? '' : ' AND ClosedDate < LAST_N_DAYS:'+CaseClosedOlder);
+        Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
+        
+        cases=Database.query(Query);
+        
+        map_casemap =  new map<id,case>(cases);
+        map_atm = new map<id, attachment>([SELECT Body,BodyLength,ContentType,CreatedById,CreatedDate,Description,Id,
+                                             IsDeleted,IsPrivate,LastModifiedById,LastModifiedDate,Name,OwnerId,ParentId,
+                                             SystemModstamp FROM attachment where  ParentId in : map_casemap.keySet() and  Name like 'Parser%' ]);
+        Map <id,Attachment> AllAttach=new Map<id,Attachment>([Select Id,ParentId,Name,body,ContentType,description,IsPrivate,ownerId From Attachment where ParentID in :map_casemap.keySet()]);
+        for(Attachment at:map_atm.values())
+        {
+            //Reading Parser File and creating a email corresponding to every parser and fetching attachment ids in parser
+            String bodyContent = at.body.toString(); //bodyContent is body of parser file
+            String[] lstring = bodycontent.split('#%#');
+            //system.debug('############################'+ lstring);
+            EmailMessage em=new EmailMessage();
+            em.BccAddress=lstring[1];
+            em.CcAddress=lstring[2];
+            em.FromAddress=lstring[3];
+            em.FromName=lstring[4];
+            em.Headers=lstring[5];
+            em.ParentId=lstring[6]; // CaseID can also be used but this will help in bulk so it is used
+            em.TextBody=lstring[7];
+            em.ToAddress=lstring[9];
+            em.Subject=lstring[10];
+            emailrestore.add(em); 
 
-        return null;
+
+            if(lstring.size()==12)  //check if attachment ids are there or not 
+                    {
+                    atids.clear();
+                    atids = lstring[11].split(';'); //atids contains  attachment ids stored in parser file
+                    //system.debug('##############atids############ inside if condition'+atids);
+                    
+                    // Storing list of ids
+                    if(atids.size()>0)
+                    {
+                    //system.debug('##########ATTACHMENTIDS##########'+ atids);
+                    List<id> AttachmentsID=new List<id>(); // temp list this will contain attachment ids to be inserted       
+                        For(integer j=0;j<atids.size();j++)
+                        {    
+                            AttachmentsID.add(atids[j]);
+                            //System.debug('######################### '+AttachmentsID );
+                        } 
+                        IndexAttachmentMap.put(i++,AttachmentsID);// saving attachment ids with indexes in Map
+                        //SYstem.debug('#############'+ AttachmentsID +'   '+ i);
+
+                    }
+                    }
+            if(lstring.size()<12)
+                    {
+                        i++;
+                    }
+        }
+        insert emailrestore;   //email objects inserted    
+        
+        for(integer j=0;j<emailrestore.size();j++)
+        {
+            if(IndexAttachmentMap.get(j)!=NULL)
+            {
+            EmailIDAttachmentMap.put(emailrestore[j].id, IndexAttachmentMap.get(j)) ;  //saving emailid and corresponding attachments id using map1 
+            //IndexAttachmentMap.remove(j);
+            }
+        }
+
+        List<Attachment> atmList=new List<Attachment>();
+        List<Attachment> atmLis=new List<Attachment>();
+        for(id eid : EmailIDAttachmentMap.keySet() )   // traversing list of inserted email ids in map2
+         {      
+             List<id> atid;
+             if(EmailIDAttachmentMap.get(eid) != NULL)
+             {
+                 atid=new List<id>(EmailIDAttachmentMap.get(eid));// saving a set of ids for specific email id
+             }
+             for(Integer j=0;j<atid.size();j++)
+             {
+                    Attachment At=AllAttach.get(atid[j]);
+                    attachment atch = new attachment();
+                    atch.Body = At.Body;
+                    atch.ContentType = At.ContentType;
+                    atch.Description = At.Description;
+                    atch.IsPrivate =  At.IsPrivate;
+                    atch.Name  = At.Name.substringAfterLast('_') ;
+                    atch.OwnerId = At.OwnerId;
+                    atch.ParentId = eid;
+                    atmList.add(atch);  
+                    atmLis.add(at); 
+             }                   
+         } 
+
+         insert atmList; //insert
+       //delete atmLis;
+        del();
+
+    
+    return null;  
     }
-
-    
-    
-    
-    
+void del()
+    {
+        List<Attachment> ParserfilesDelete=new List<Attachment>();
+        List<Attachment> EmailfilesDelete=new List<Attachment>();
+        ParserfilesDelete=[Select Id,ParentId,Name,body,ContentType From Attachment where name like '%Parser.txt' and ParentId in :map_casemap.keySet()];
+        EmailfilesDelete=[Select Id,ParentId,Name,body,ContentType From Attachment where name like 'EM%.pdf' and ParentId in :map_casemap.keySet()];
+        //Delete ParserfilesDelete;
+        //Delete EmailfilesDelete;
+    }
               
 }
