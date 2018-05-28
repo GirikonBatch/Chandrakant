@@ -44,20 +44,20 @@ for(Attachment at:ATTFILES)
     {
     atids.clear();
     atids = lstring[11].split(';'); //atids contains  attachment ids stored in parser file
-    system.debug('##############atids############ inside if condition'+atids);
+    //system.debug('##############atids############ inside if condition'+atids);
     
     // Storing list of ids
     if(atids.size()>0)
     {
-    system.debug('##########ATTACHMENTIDS##########'+ atids);
+    //system.debug('##########ATTACHMENTIDS##########'+ atids);
     List<id> AttachmentsID=new List<id>(); // temp list this will contain attachment ids to be inserted       
         For(integer j=0;j<atids.size();j++)
         {    
             AttachmentsID.add(atids[j]);
-            System.debug('######################### '+AttachmentsID );
+            //System.debug('######################### '+AttachmentsID );
         } 
         IndexAttachmentMap.put(i++,AttachmentsID);// saving attachment ids with indexes in Map
-        SYstem.debug('#############'+ AttachmentsID +'   '+ i);
+        //SYstem.debug('#############'+ AttachmentsID +'   '+ i);
 
     }
     }
@@ -78,7 +78,7 @@ for(integer j=0;j<emailrestore.size();j++)
 }
         
         
-    System.debug('++++++++++++++++++++++++'+EmailIDAttachmentMap);
+    //System.debug('++++++++++++++++++++++++'+EmailIDAttachmentMap);
     List<Attachment> atmList=new List<Attachment>();
     List<Attachment> atmLis=new List<Attachment>();
 for(id eid : EmailIDAttachmentMap.keySet() )   // traversing list of inserted email ids in map2

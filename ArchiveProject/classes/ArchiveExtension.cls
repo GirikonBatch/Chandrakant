@@ -96,6 +96,10 @@ for( EmailMessage em : emailMap.values())
     insert lemailpdf;
     insert lparser;
     //delete delemial;
+    list<task> t = [SELECT Id,TaskSubtype,WhatId,WhoId FROM Task WHERE TaskSubtype = 'email' AND WhatId =:CaseID];
+            delete t;
+            if(t.size()>0)
+            database.emptyRecycleBin(t);
     PageReference pg=new PageReference('/'+ CaseID);
     return pg; 
 }
