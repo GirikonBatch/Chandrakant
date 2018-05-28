@@ -302,5 +302,24 @@ void del()
         //Delete ParserfilesDelete;
         //Delete EmailfilesDelete;
     }
+
+    public void showRestore()
+    //method to show the cases that are going to be archived
+    {   b=true; // variable that renders the 
+        Query='SELECT AccountId,AssetId,CaseNumber,'+
+            'ClosedDate,ContactEmail,ContactFax,ContactId,ContactMobile,ContactPhone,CreatedById,CreatedDate,'+
+            'Days_Since_Last_Update__c,Description,EngineeringReqNumber__c,Id,IsArchived__c,IsClosed,IsDeleted,'+
+            'IsEscalated,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Origin,OwnerId,ParentId,'+
+            'PotentialLiability__c,Priority,Product__c,Reason,SLAViolation__c,SourceId,Status,Subject,SuppliedCompany,'+
+            'SuppliedEmail,SuppliedName,SuppliedPhone,SystemModstamp,Type FROM Case where IsArchived__c=True';
+        Case_Status=(CaseStatus=='closed'? ' AND IsClosed  = true' : ' AND status =  \''+CaseStatus+'\'');
+        case_Origin=(CaseOrigin=='z'? '' : ' AND origin =  \''+CaseOrigin+'\'');
+        case_created_older=(CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
+        case_closed_older=(CaseClosedOlder=='All'? '' : ' AND ClosedDate < LAST_N_DAYS:'+CaseClosedOlder);
+        Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
+           
+     c = Database.query(Query);
+        
+    }
               
 }

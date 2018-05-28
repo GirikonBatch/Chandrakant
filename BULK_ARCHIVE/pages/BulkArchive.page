@@ -7,7 +7,8 @@
     <apex:PageBlockButtons >
         <apex:commandButton value="Archive" action="{!ArchiveCases}" />
         <apex:commandButton value="Restore" />
-        <apex:commandButton value="Show Cases to be Archived/Restored" action="{!show}"  />
+        <apex:commandButton value="Show Cases to be Archived" action="{!show}"/>
+        <apex:commandButton value="Show Cases to be Restored" action="{showRestore}" />
     </apex:PageBlockButtons>
 
     <apex:pageBlockSection >
