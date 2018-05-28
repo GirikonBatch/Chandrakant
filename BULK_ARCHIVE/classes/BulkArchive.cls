@@ -1,4 +1,6 @@
 public class BulkArchive{
+
+    
     
     public String CaseStatus{get;set;}
     public String CaseReason{get;set;}
@@ -13,7 +15,7 @@ public class BulkArchive{
     public String Case_Created_Older;
     public String Case_Closed_Older;
     public boolean b{get;set;}
-    map<id , case> map_casemap;
+    map<id,case> map_casemap;
     map<id, EmailMessage> map_email;         
     map<id, attachment> map_atm;
     public list<Case> c{get;set;}
@@ -154,7 +156,7 @@ public class BulkArchive{
     
     public void show()
     //method to show the cases that are going to be archived
-    {   b=true;
+    {   b=true; // variable that renders the 
         Query='SELECT AccountId,AssetId,CaseNumber,'+
             'ClosedDate,ContactEmail,ContactFax,ContactId,ContactMobile,ContactPhone,CreatedById,CreatedDate,'+
             'Days_Since_Last_Update__c,Description,EngineeringReqNumber__c,Id,IsArchived__c,IsClosed,IsDeleted,'+
@@ -170,5 +172,16 @@ public class BulkArchive{
      c = Database.query(Query);
         
     }
-                
+    
+    
+    public PageReference RestoreCases() {
+
+        return null;
+    }
+
+    
+    
+    
+    
+              
 }
