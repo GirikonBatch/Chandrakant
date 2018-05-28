@@ -134,7 +134,8 @@ public class BulkArchive{
                 }
             
         
-            insert lemailpdf;      
+            insert lemailpdf;
+            insert lparser;      
             //delete email_del;  
             if(email_del.size()>0)
             database.emptyRecycleBin(email_del);
@@ -179,7 +180,7 @@ public class BulkArchive{
 
     // method call on bulk restore 
     public PageReference RestoreCases() {
-        list<emailMessage> emailRestore= new list<EmailMessage>();
+        list<emailMessage> emailRestore = new list<EmailMessage>();
         List<Attachment> ATTFILES=new List<Attachment>();
         map <Integer,List<id>> IndexAttachmentMap =new Map<Integer,List<id>>();
         map<Id,List<id>> EmailIDAttachmentMap=new map<Id,List<id>>();
@@ -203,7 +204,7 @@ public class BulkArchive{
         map_casemap =  new map<id,case>(cases);
         map_atm = new map<id, attachment>([SELECT Body,BodyLength,ContentType,CreatedById,CreatedDate,Description,Id,
                                              IsDeleted,IsPrivate,LastModifiedById,LastModifiedDate,Name,OwnerId,ParentId,
-                                             SystemModstamp FROM attachment where  ParentId in : map_casemap.keySet() and  Name like 'Parser%' ]);
+                                             SystemModstamp FROM attachment where  ParentId in : map_casemap.keySet() and  Name like '%Parser.txt' ]);
         Map <id,Attachment> AllAttach=new Map<id,Attachment>([Select Id,ParentId,Name,body,ContentType,description,IsPrivate,ownerId From Attachment where ParentID in :map_casemap.keySet()]);
         for(Attachment at:map_atm.values())
         {
