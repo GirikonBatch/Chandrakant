@@ -14,6 +14,9 @@ public class BulkArchive{
     public String Case_Origin;
     public String Case_Created_Older;
     public String Case_Closed_Older;
+    public Boolean arch{get;set;}
+    public Boolean rest{get;set;}
+    
     public boolean b{get;set;}
     map<id,case> map_casemap;
     map<id, EmailMessage> map_email;         
@@ -158,7 +161,8 @@ public class BulkArchive{
     
     public void show()
     //method to show the cases that are going to be archived
-    {   b=true; // variable that renders the 
+    {   arch=false;rest=true;
+        b=true; // variable that renders the 
         Query='SELECT AccountId,AssetId,CaseNumber,'+
             'ClosedDate,ContactEmail,ContactFax,ContactId,ContactMobile,ContactPhone,CreatedById,CreatedDate,'+
             'Days_Since_Last_Update__c,Description,EngineeringReqNumber__c,Id,IsArchived__c,IsClosed,IsDeleted,'+
@@ -180,7 +184,7 @@ public class BulkArchive{
 
     // method call on bulk restore 
     public PageReference RestoreCases() {
-        system.debug('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+        
         list<emailMessage> emailRestore = new list<EmailMessage>();
         list<case> arch_update=new List<Case>();
         List<Attachment> ATTFILES=new List<Attachment>();
@@ -315,7 +319,8 @@ void del()
 
     public void showRestore()
     //method to show the cases that are going to be archived
-    {   b=true; // variable that renders the 
+    {   arch=true;rest=false;
+        b=true; // variable that renders the 
         Query='SELECT AccountId,AssetId,CaseNumber,'+
             'ClosedDate,ContactEmail,ContactFax,ContactId,ContactMobile,ContactPhone,CreatedById,CreatedDate,'+
             'Days_Since_Last_Update__c,Description,EngineeringReqNumber__c,Id,IsArchived__c,IsClosed,IsDeleted,'+
