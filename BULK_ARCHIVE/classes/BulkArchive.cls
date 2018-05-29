@@ -182,6 +182,7 @@ public class BulkArchive{
     public PageReference RestoreCases() {
         system.debug('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
         list<emailMessage> emailRestore = new list<EmailMessage>();
+        list<case> arch_update=new List<Case>();
         List<Attachment> ATTFILES=new List<Attachment>();
         map <Integer,List<id>> IndexAttachmentMap =new Map<Integer,List<id>>();
         map<Id,List<id>> EmailIDAttachmentMap=new map<Id,List<id>>();
@@ -291,11 +292,15 @@ public class BulkArchive{
          } 
 
          insert atmList; //insert
-       //delete atmLis;
-        del();
+         //delete atmLis;
+         del();
+         for(Case c:map_casemap.keyset())
+         {
+             c.IsArchived__c=False;
 
-    
-    return null;  
+         }
+    return null; 
+
     }
 void del()
     {
