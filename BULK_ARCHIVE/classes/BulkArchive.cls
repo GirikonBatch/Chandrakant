@@ -180,6 +180,7 @@ public class BulkArchive{
 
     // method call on bulk restore 
     public PageReference RestoreCases() {
+        system.debug('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
         list<emailMessage> emailRestore = new list<EmailMessage>();
         List<Attachment> ATTFILES=new List<Attachment>();
         map <Integer,List<id>> IndexAttachmentMap =new Map<Integer,List<id>>();
@@ -198,10 +199,11 @@ public class BulkArchive{
         case_created_older=(CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
         case_closed_older=(CaseClosedOlder=='All'? '' : ' AND ClosedDate < LAST_N_DAYS:'+CaseClosedOlder);
         Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
-        
+        system.debug('########################'+Query);
         cases=Database.query(Query);
-        
+    
         map_casemap =  new map<id,case>(cases);
+        system.debug('############$$$$$$$$$$$$$$$$$$'+ map_casemap);
         map_atm = new map<id, attachment>([SELECT Body,BodyLength,ContentType,CreatedById,CreatedDate,Description,Id,
                                              IsDeleted,IsPrivate,LastModifiedById,LastModifiedDate,Name,OwnerId,ParentId,
                                              SystemModstamp FROM attachment where  ParentId in : map_casemap.keySet() and  Name like '%Parser.txt' ]);
@@ -211,7 +213,8 @@ public class BulkArchive{
             //Reading Parser File and creating a email corresponding to every parser and fetching attachment ids in parser
             String bodyContent = at.body.toString(); //bodyContent is body of parser file
             String[] lstring = bodycontent.split('#%#');
-            //system.debug('############################'+ lstring);
+            system.debug('############################'+ lstring);
+            System.debug('####################'+at.id);
             EmailMessage em=new EmailMessage();
             em.BccAddress=lstring[1];
             em.CcAddress=lstring[2];
