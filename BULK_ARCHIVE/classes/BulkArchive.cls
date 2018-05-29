@@ -294,11 +294,12 @@ public class BulkArchive{
          insert atmList; //insert
          //delete atmLis;
          del();
-         for(Case c:map_casemap.keyset())
+         for(Case c:map_casemap.values())
          {
              c.IsArchived__c=False;
-
+             arch_update.add(c);
          }
+         update arch_update;
     return null; 
 
     }
