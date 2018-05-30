@@ -1,4 +1,4 @@
-global class BatchScheduleArchive implements Database.Batchable<sObject>{
+global class BatchArchive implements Database.Batchable<sObject>{
         public String Query;
         string aid='';
         map<id,case> map_casemap;
@@ -11,7 +11,7 @@ global class BatchScheduleArchive implements Database.Batchable<sObject>{
         
 
         //constructor to pass Query for extracting specific cases 
-        global BatchScheduleArchive( String Query)
+        global BatchArchive( String Query)
         {
                    this.Query=Query;
         }

@@ -6,9 +6,9 @@
     <apex:PageBlockButtons location="bottom">
             <apex:commandButton value="Show Cases to be Archived" action="{!show}" />
             <apex:commandButton value="Show Cases to be Restored" action="{!showRestore}" />
-            <apex:commandButton value="Schedule Archive" action="ScheduleArchivee" />
-            <apex:commandButton value="Schedule Restore" action="ScheduleRestoree"/>
-    </apex:PageBlockButtons >
+            <apex:commandButton value="Schedule Archive" action="ScheduleArchive" />
+            <apex:commandButton value="Schedule Restore" action="ScheduleRestore"/>
+    </apex:PageBlockButtons>
             
 
     <apex:pageBlockSection >

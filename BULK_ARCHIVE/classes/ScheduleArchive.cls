@@ -2,7 +2,7 @@ global class ScheduleArchive implements Schedulable
 {
 public String Query;
 Integer RecordSize; 
-global ScheduleArchive(string Query,Integer RecordSize)
+global ScheduleArchive (string Query,Integer RecordSize)
 {
 this.Query=Query;
 this.RecordSize=RecordSize;

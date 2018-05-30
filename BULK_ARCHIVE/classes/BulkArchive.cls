@@ -8,7 +8,7 @@ public class BulkArchive{
     public String CaseCreatedOlder{get;set;}
     public Integer RecordSize{get;set;}
     public String CaseClosedOlder{get; set;}
-    public String Query;
+    public String Query; //holds the soql to be executed
     public String Case_Status;
     public String Case_Reason;
     public String Case_Origin;
@@ -338,11 +338,15 @@ void del()
     }
     public void ScheduleArchivee()
     {
-        ScheduleArchive obj= new ScheduleArchive();
+        ScheduleArchive obj= new ScheduleArchive(Query,RecordSize);
+        String sch = '0 0 16 * * ?';
+        system.schedule('BatchArchive', sch, obj);
     }
     public void ScheduleRestoree()
     {
-        
+       ScheduleRestore obj=new ScheduleRestore(Query,RecordSize);
+       String sch = '0 0 16 * * ?';
+       system.schedule('BatchArchive', sch, obj); 
     }
               
 }
