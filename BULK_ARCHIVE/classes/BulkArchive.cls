@@ -1,7 +1,5 @@
 public class BulkArchive{
 
-    
-    
     public String CaseStatus{get;set;}
     public String CaseReason{get;set;}
     public String CaseOrigin{get;set;}
@@ -176,7 +174,7 @@ public class BulkArchive{
         Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
            
      c = Database.query(Query);
-        System.debug('################'+'abcd');  // just to check anonymous on vscode
+        //System.debug('################'+'abcd');  // just to check anonymous on vscode
     }
     
     
@@ -204,7 +202,7 @@ public class BulkArchive{
         case_created_older=(CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
         case_closed_older=(CaseClosedOlder=='All'? '' : ' AND ClosedDate < LAST_N_DAYS:'+CaseClosedOlder);
         Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
-        system.debug('########################'+Query);
+        //system.debug('########################'+Query);
         lcases=Database.query(Query);
     
         map_casemap =  new map<id,case>(lcases);
@@ -218,8 +216,8 @@ public class BulkArchive{
             //Reading Parser File and creating a email corresponding to every parser and fetching attachment ids in parser
             String bodyContent = at.body.toString(); //bodyContent is body of parser file
             String[] lstring = bodycontent.split('#%#');
-            system.debug('############################'+ lstring);
-            System.debug('####################'+at.id);
+            //system.debug('############################'+ lstring);
+            //System.debug('####################'+at.id);
             EmailMessage em=new EmailMessage();
             em.BccAddress=lstring[1];
             em.CcAddress=lstring[2];
@@ -341,13 +339,13 @@ void del()
         ScheduleArchive obj= new ScheduleArchive(Query,RecordSize);
         String sch = '0 35 05 * * ?';
         system.schedule('BatchArchive', sch, obj);
-        //BatchArchive obj=new BatchArchive(Query);
+        //BatchArchive obj=new BatchArchive(Query);  static checking
         //database.executebatch(obj,2);
     }
     public void ScheduleRestoree()
     {
        ScheduleRestore obj=new ScheduleRestore(Query,RecordSize);
-       String sch = '0 35 05 * * ?';
+       String sch = '0 35 05 * * ?';  // static time for checking  should be taken from user
        system.schedule('BatchArchive', sch, obj); 
     }
               
