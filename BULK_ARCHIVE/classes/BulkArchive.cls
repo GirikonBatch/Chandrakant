@@ -24,7 +24,7 @@ public class BulkArchive{
     public list<Case> c{get;set;}
     
     string aid='';
-    list<EmailMessage> email_del = new list<EmailMessage>();
+    list<EmailMessage> ldel_email = new list<EmailMessage>();
     list<attachment> lattach = new list<attachment>();  // list to add attachments
     list<attachment> lemailpdf = new list<attachment>();  // list to insert emails
     list<attachment> lparser=new list<attachment>();
@@ -40,7 +40,7 @@ public class BulkArchive{
     }
     public Void ArchiveCases()
     {
-        email_del.clear();
+        ldel_email.clear();
         lattach.clear();
         lemailpdf.clear();
         
@@ -132,16 +132,16 @@ public class BulkArchive{
                                                 '#%#'+em.Subject+
                                                 '#%#'+aid);
                         lparser.add(parse);      
-                        email_del.add(em);
+                        ldel_email.add(em);
            
                 }
             
         
             insert lemailpdf;
             insert lparser;      
-            //delete email_del;  
-            if(email_del.size()>0)
-            database.emptyRecycleBin(email_del);
+            //delete ldel_email;  
+            if(ldel_email.size()>0)
+            database.emptyRecycleBin(ldel_email);
 
             //deleting tasks to reduce memory 
             list<task> t = [SELECT Id,TaskSubtype,WhatId,WhoId FROM Task WHERE TaskSubtype = 'email' AND WhatId in: map_casemap.keySet()];
@@ -191,7 +191,7 @@ public class BulkArchive{
         map <Integer,List<id>> IndexAttachmentMap =new Map<Integer,List<id>>();
         map<Id,List<id>> EmailIDAttachmentMap=new map<Id,List<id>>();
         List<String> atids = new List<String>();
-        List<Case> cases=new List<Case>();
+        List<Case> lcases=new List<Case>();
         integer i=0;
         Query='SELECT AccountId,AssetId,CaseNumber,'+
             'ClosedDate,ContactEmail,ContactFax,ContactId,ContactMobile,ContactPhone,CreatedById,CreatedDate,'+
@@ -205,9 +205,9 @@ public class BulkArchive{
         case_closed_older=(CaseClosedOlder=='All'? '' : ' AND ClosedDate < LAST_N_DAYS:'+CaseClosedOlder);
         Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
         system.debug('########################'+Query);
-        cases=Database.query(Query);
+        lcases=Database.query(Query);
     
-        map_casemap =  new map<id,case>(cases);
+        map_casemap =  new map<id,case>(lcases);
         system.debug('############$$$$$$$$$$$$$$$$$$'+ map_casemap);
         map_atm = new map<id, attachment>([SELECT Body,BodyLength,ContentType,CreatedById,CreatedDate,Description,Id,
                                              IsDeleted,IsPrivate,LastModifiedById,LastModifiedDate,Name,OwnerId,ParentId,
