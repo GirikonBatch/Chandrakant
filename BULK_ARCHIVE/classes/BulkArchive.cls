@@ -336,5 +336,9 @@ void del()
      c = Database.query(Query);
         
     }
+    public void ScheduleArchive()
+    {
+
+    }
               
 }
