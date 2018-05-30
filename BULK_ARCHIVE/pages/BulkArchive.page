@@ -4,10 +4,10 @@
     <apex:PageBlock >
 
     <apex:PageBlockButtons location="bottom">
-            <apex:commandButton value="Show Cases to be Archived" action="{!show}" />
-            <apex:commandButton value="Show Cases to be Restored" action="{!showRestore}" />
-            <apex:commandButton value="Schedule Archive" action="{!ScheduleArchivee}" />
-            <apex:commandButton value="Schedule Restore" action="{!ScheduleRestoree}"/>
+            <apex:commandButton value="Show Cases to be Archived" action="{!show}" disabled ="{!arch}"/>
+            <apex:commandButton value="Show Cases to be Restored" action="{!showRestore}" disabled ="{!rest}"/>
+            <apex:commandButton value="Schedule Archive" action="{!ScheduleArchivee}" disabled ="{!arch}"/>
+            <apex:commandButton value="Schedule Restore" action="{!ScheduleRestoree}" disabled ="{!rest}"/>
     </apex:PageBlockButtons>
             
 
@@ -82,7 +82,7 @@
       
 </apex:PageBlock>
         
-        <apex:pageBlock id="x" rendered="{!b}" >
+<apex:pageBlock id="x" rendered ="{!b}" >
             
         <apex:pageBlockTable value="{!c}" var="cc">
             
@@ -94,14 +94,14 @@
 
         
         <apex:PageBlockButtons location="bottom" >
-        <apex:commandButton value="Archive" action="{!ArchiveCases}" disabled="arch" />
-        <apex:commandButton value="Restore" action="{!RestoreCases}" disabled="rest" /> 
+        <apex:commandButton value="Archive" action="{!ArchiveCases}" disabled ="{!arch}" />
+        <apex:commandButton value="Restore" action="{!RestoreCases}" disabled ="{!rest}" /> 
         </apex:PageBlockButtons>
             
             
             
             
-        </apex:pageBlock>
+</apex:pageBlock>
         
         
 </apex:form>

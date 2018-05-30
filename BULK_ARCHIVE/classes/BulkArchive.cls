@@ -14,7 +14,7 @@ public class BulkArchive{
     public String Case_Origin;
     public String Case_Created_Older;
     public String Case_Closed_Older;
-    public Boolean arch{get;set;}
+    public Boolean arch{get;set;} //marker variable to render archive and showarchivecases and scheduleArchive Cases 
     public Boolean rest{get;set;}
     
     public boolean b{get;set;}
@@ -64,7 +64,7 @@ public class BulkArchive{
         
         
         map_email = new map<id, EmailMessage>([SELECT ActivityId,BccAddress,CcAddress,CreatedById,CreatedDate,Counter__c,FromAddress,FromName,
-                                              Hasattachment,Headers,HtmlBody,Id,Incoming,IsClientManaged,IsDeleted,IsExternallyVisible,
+                                              Hasattachment,Headers,HtmlBody,Id,Incoming,IsDeleted,IsExternallyVisible,
                                               LastModifiedById,LastModifiedDate,MessageDate,MessageIdentifier,ParentId,RelatedToId,
                                               ReplyToEmailMessageId,Status,Subject,SystemModstamp,TextBody,ThreadIdentifier,ToAddress,
                                               ValidatedFromAddress FROM EmailMessage where ParentId in : map_casemap.keySet() ]) ;
@@ -176,7 +176,7 @@ public class BulkArchive{
         Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
            
      c = Database.query(Query);
-        
+        System.debug('################'+'abcd');  // just to check anonymous on vscode
     }
     
     
