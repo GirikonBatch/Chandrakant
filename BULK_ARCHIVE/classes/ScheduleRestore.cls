@@ -9,7 +9,7 @@ this.RecordSize=RecordSize;
 }
 global void execute(SchedulableContext Sc)
 {
-BatchArchive obj=new BatchArchive(Query);
+BatchRestore obj=new BatchRestore(Query);
 database.executebatch(obj,RecordSize);
 }
 
