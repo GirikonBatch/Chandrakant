@@ -8,7 +8,7 @@ global class BatchScheduleArchive implements Database.Batchable<sObject>{
         list<attachment> lattach = new list<attachment>();  // list to add attachments
         list<attachment> lemailpdf = new list<attachment>();  // list to insert emails
         list<attachment> lparser=new list<attachment>();
-
+        
 
         //constructor to pass Query for extracting specific cases 
         global BatchScheduleArchive( String Query)

@@ -336,9 +336,13 @@ void del()
      c = Database.query(Query);
         
     }
-    public void ScheduleArchive()
+    public void ScheduleArchivee()
     {
-
+        ScheduleArchive obj= new ScheduleArchive();
+    }
+    public void ScheduleRestoree()
+    {
+        
     }
               
 }

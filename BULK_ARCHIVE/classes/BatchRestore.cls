@@ -1,13 +1,16 @@
-global class BatchRstore implements Database.Batchable<sObject>{
+global class BatchRestore implements Database.Batchable<sObject>{
         public String Query;
+        Integer i=0;
         List<EmailMessage> lemailrestore= new List<EmailMessage>();
+        List<String> atids = new List<String>();
+        list<case> arch_update=new List<Case>();
         map<id,case> map_casemap;
         map<id, attachment> map_atm;
         map <Integer,List<id>> IndexAttachmentMap =new Map<Integer,List<id>>();
         map<Id,List<id>> EmailIDAttachmentMap=new map<Id,List<id>>();
         map <id,Attachment> AllAttach=new Map<id,Attachment>();
         //constructor to pass Query for extracting specific cases 
-        global BatchScheduleArchive( String Query)
+        global BatchRestore( String Query)
         {
                    this.Query=Query;
         }
@@ -118,8 +121,6 @@ global class BatchRstore implements Database.Batchable<sObject>{
              arch_update.add(c);
          }
          update arch_update;
-    return null; 
-
     }
 void del()
     {
