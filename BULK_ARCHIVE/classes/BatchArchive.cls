@@ -25,7 +25,7 @@ global class BatchArchive implements Database.Batchable<sObject>{
         // Execute Logic
         global void execute(Database.BatchableContext BC, List<Case> lcases)
         {
-              
+             System.debug('############################################################') ;
             map_casemap =  new map<id,case>(lcases);
             map_email = new map<id, EmailMessage>([SELECT ActivityId,BccAddress,CcAddress,CreatedById,CreatedDate,Counter__c,FromAddress,FromName,
                                               Hasattachment,Headers,HtmlBody,Id,Incoming,IsDeleted,IsExternallyVisible,

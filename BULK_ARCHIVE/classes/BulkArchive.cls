@@ -339,13 +339,15 @@ void del()
     public void ScheduleArchivee()
     {
         ScheduleArchive obj= new ScheduleArchive(Query,RecordSize);
-        String sch = '0 0 16 * * ?';
+        String sch = '0 35 05 * * ?';
         system.schedule('BatchArchive', sch, obj);
+        //BatchArchive obj=new BatchArchive(Query);
+        //database.executebatch(obj,2);
     }
     public void ScheduleRestoree()
     {
        ScheduleRestore obj=new ScheduleRestore(Query,RecordSize);
-       String sch = '0 0 16 * * ?';
+       String sch = '0 35 05 * * ?';
        system.schedule('BatchArchive', sch, obj); 
     }
               
