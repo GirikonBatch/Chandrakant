@@ -101,6 +101,9 @@ for( EmailMessage em : emailMap.values())
             delete t;
             if(t.size()>0)
             database.emptyRecycleBin(t);
+    Case c=new Case(id=CaseID);
+    c.IsArchived__c=true;
+    update c;
     PageReference pg=new PageReference('/'+ CaseID);
     return pg; 
 }

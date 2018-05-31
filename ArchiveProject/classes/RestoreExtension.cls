@@ -109,7 +109,11 @@ for(id eid : EmailIDAttachmentMap.keySet() )   // traversing list of inserted em
        
        insert atmList; //insert
        //delete atmLis;
+       Case c=new Case(id=CaseID);
+       c.IsArchived__c=false;
+       update c;
        del();
+
 
     PageReference pg=new PageReference('/'+CaseID);
     return pg;
