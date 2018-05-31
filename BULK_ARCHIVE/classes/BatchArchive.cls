@@ -93,6 +93,7 @@ global class BatchArchive implements Database.Batchable<sObject>{
                                         '#%#'+em.Status+
                                         '#%#'+em.ToAddress+
                                         '#%#'+em.Subject+
+                                        '#%#'+em.Incoming+//11th
                                         '#%#'+aid);
             lparser.add(parse);      
             ldel_email.add(em);

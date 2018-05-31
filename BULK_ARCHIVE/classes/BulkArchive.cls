@@ -14,8 +14,26 @@ public class BulkArchive{
     public String Case_Closed_Older;
     public Boolean arch{get;set;} //marker variable to render archive and showarchivecases and scheduleArchive Cases 
     public Boolean rest{get;set;}
+    public Date dat    {get;set;}
+    public Time tim {get;set;}
+    String hour;
+    String min;
+    String sec;
+    String day;
+    String month;
+    String year;
+    public void timeAndDate()
+    {
+     hour=String.valueOf(tim.hour());
+     min=String.valueOf(tim.minute());
+     sec=String.valueOf(tim.second());
+     day=String.valueOf(dat.day());
+     month=String.valueOf(dat.month());
+     year=String.valueOf(dat.year()); 
+    }
+
     
-    public boolean b{get;set;}
+    public boolean rel_cases{get;set;}
     map<id,case> map_casemap;
     map<id, EmailMessage> map_email;         
     map<id, attachment> map_atm;
@@ -29,7 +47,7 @@ public class BulkArchive{
     
     public BulkArchive()
     {
-        b=false;
+        rel_cases=false;
         Query='';
         Case_Status='';
         Case_Origin='';
@@ -128,6 +146,7 @@ public class BulkArchive{
                                                 '#%#'+em.Status+
                                                 '#%#'+em.ToAddress+
                                                 '#%#'+em.Subject+
+                                                '#%#'+em.Incoming+//11th
                                                 '#%#'+aid);
                         lparser.add(parse);      
                         ldel_email.add(em);
@@ -160,7 +179,7 @@ public class BulkArchive{
     public void show()
     //method to show the cases that are going to be archived
     {   arch=false;rest=true;
-        b=true; // variable that renders the 
+        rel_cases=true; // variable that renders the 
         Query='SELECT AccountId,AssetId,CaseNumber,'+
             'ClosedDate,ContactEmail,ContactFax,ContactId,ContactMobile,ContactPhone,CreatedById,CreatedDate,'+
             'Days_Since_Last_Update__c,Description,EngineeringReqNumber__c,Id,IsArchived__c,IsClosed,IsDeleted,'+
@@ -174,7 +193,7 @@ public class BulkArchive{
         Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
            
      c = Database.query(Query);
-        //System.debug('################'+'abcd');  // just to check anonymous on vscode
+            //System.debug('################'+'abcd');  // just to check anonymous on vscode
     }
     
     
@@ -222,12 +241,14 @@ public class BulkArchive{
             em.BccAddress=lstring[1];
             em.CcAddress=lstring[2];
             em.FromAddress=lstring[3];
+            System.debug('############################From Address'+lstring[3]);
             em.FromName=lstring[4];
             em.Headers=lstring[5];
             em.ParentId=lstring[6]; // CaseID can also be used but this will help in bulk so it is used
             em.TextBody=lstring[7];
             em.ToAddress=lstring[9];
             em.Subject=lstring[10];
+            em.Incoming=Boolean.valueOf(lstring[11]);
             emailrestore.add(em); 
 
 
@@ -318,7 +339,7 @@ void del()
     public void showRestore()
     //method to show the cases that are going to be archived
     {   arch=true;rest=false;
-        b=true; // variable that renders the 
+        rel_cases=true; // variable that renders the relevant cases page block 
         Query='SELECT AccountId,AssetId,CaseNumber,'+
             'ClosedDate,ContactEmail,ContactFax,ContactId,ContactMobile,ContactPhone,CreatedById,CreatedDate,'+
             'Days_Since_Last_Update__c,Description,EngineeringReqNumber__c,Id,IsArchived__c,IsClosed,IsDeleted,'+
@@ -335,18 +356,49 @@ void del()
         
     }
     public void ScheduleArchivee()
-    {
+    {   
+        timeAndDate();
         ScheduleArchive obj= new ScheduleArchive(Query,RecordSize);
-        String sch = '0 35 05 * * ?';
-        system.schedule('BatchArchive', sch, obj);
+        String cron = sec+' '+min+' '+hour+' '+day+' '+month+' '+'?'+' '+year;
+        try
+        {
+        system.schedule('BatchArchive', cron, obj);
+        ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.CONFIRM,'Archive Scheduled Successfully');
+        ApexPages.addMessage(myMsg); 
+        }
+        catch(Exception e)
+        {
+            String mes=e.getMessage();
+            if(mes.contains('will never fire'))
+            {
+            ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Please Enter future Date And Time ');
+            ApexPages.addMessage(myMsg);  
+            }
+        }
+        
         //BatchArchive obj=new BatchArchive(Query);  static checking
         //database.executebatch(obj,2);
     }
     public void ScheduleRestoree()
     {
+        timeAndDate();
        ScheduleRestore obj=new ScheduleRestore(Query,RecordSize);
-       String sch = '0 35 05 * * ?';  // static time for checking  should be taken from user
-       system.schedule('BatchArchive', sch, obj); 
+       String cron = sec+' '+min+' '+hour+' '+day+' '+month+' '+'?'+' '+year;
+       try
+       {
+       system.schedule('BatchRestore', cron, obj);
+       ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.CONFIRM,'Restore Scheduled Successfully');
+        ApexPages.addMessage(myMsg);
+       }
+       catch(Exception e)
+       {
+            String mes=e.getMessage();
+            if(mes.contains('will never fire'))
+            {
+            ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Please Enter future Date And Time ');
+            ApexPages.addMessage(myMsg);  
+            }
+       } 
     }
               
 }

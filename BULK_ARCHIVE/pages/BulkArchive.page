@@ -1,7 +1,10 @@
-<apex:page Controller="BulkArchive">
-
+<apex:page Controller="BulkArchive" doctype="html-5.0">
+<apex:pageMessages>
+</apex:pageMessages>
     <apex:form >
+
     <apex:PageBlock >
+    
 
     <apex:PageBlockButtons location="bottom">
             <apex:commandButton value="Show Cases to be Archived" action="{!show}" disabled ="{!arch}"/>
@@ -60,8 +63,7 @@
             </apex:selectList>
     
         
-        <apex:selectList label="Case Closed older than" value="{!CaseClosedOlder}" size="1">
-           
+            <apex:selectList label="Case Closed older than" value="{!CaseClosedOlder}" size="1">
             <apex:selectOption itemValue="ALL" itemLabel="ALL" />
             <apex:selectOption itemValue="15" itemLabel="15 Days" />
             <apex:selectOption itemValue="30" itemLabel="30 Days" />
@@ -69,16 +71,18 @@
             <apex:selectOption itemValue="60" itemLabel="60 Days" />
             <apex:selectOption itemValue="Current Year" itemLabel="Current Year" />
             <apex:selectOption itemValue="Last Year" itemLabel="Last Year" />
-        </apex:selectList>
-       
+            </apex:selectList>
         
+
+            <apex:input label="Preferred Schedule Date" type="date" value="{!dat}"/>
+            <apex:input label="Preferred Schedule Time" type="time" value="{!tim}" />
         
         
       </apex:pageBlockSection>
       
 </apex:PageBlock>
         
-<apex:pageBlock id="x" rendered ="{!b}" >
+<apex:pageBlock id="x" rendered ="{!rel_cases}" >
             
         <apex:pageBlockTable value="{!c}" var="cc">
             
@@ -101,4 +105,5 @@
         
         
 </apex:form>
+
 </apex:page>

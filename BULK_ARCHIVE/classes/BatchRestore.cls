@@ -47,6 +47,7 @@ global class BatchRestore implements Database.Batchable<sObject>{
             em.TextBody=lstring[7];
             em.ToAddress=lstring[9];
             em.Subject=lstring[10];
+            em.Incoming=Boolean.valueOf(lstring[11]);
             lemailrestore.add(em); 
 
 

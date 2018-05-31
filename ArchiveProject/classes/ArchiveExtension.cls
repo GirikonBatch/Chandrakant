@@ -86,7 +86,8 @@ for( EmailMessage em : emailMap.values())
                                                 '#%#'+em.Status+
                                                 '#%#'+em.ToAddress+
                                                 '#%#'+em.Subject+
-                                                '#%#'+aid);
+                                                '#%#'+em.Incoming+//11th
+                                                '#%#'+aid);//12th size is 13
                      lparser.add(parse);// adding parser files to list for insertion          
                      delemail.add(em);// adding email objects to list for deletion
            

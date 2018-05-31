@@ -32,18 +32,20 @@ for(Attachment at:ATTFILES)
     em.BccAddress=lstring[1];
     em.CcAddress=lstring[2];
     em.FromAddress=lstring[3];
+    System.debug('############################From Address'+lstring[3]);
     em.FromName=lstring[4];
     em.Headers=lstring[5];
     em.ParentId=lstring[6]; // CaseID can also be used but this will help in bulk so it is used
     em.TextBody=lstring[7];
     em.ToAddress=lstring[9];
     em.Subject=lstring[10];
+    em.Incoming=Boolean.valueOf(lstring[11]);
     emailrestore.add(em); // adding email object to list for insertion outside for loop
     
-    if(lstring.size()==12)  //check if attachment ids are there or not 
+    if(lstring.size()==13)  //check if attachment ids are there or not 
     {
     atids.clear();
-    atids = lstring[11].split(';'); //atids contains  attachment ids stored in parser file
+    atids = lstring[12].split(';'); //atids contains  attachment ids stored in parser file
     //system.debug('##############atids############ inside if condition'+atids);
     
     // Storing list of ids
