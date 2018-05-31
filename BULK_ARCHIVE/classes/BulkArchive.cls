@@ -241,7 +241,6 @@ public class BulkArchive{
             em.BccAddress=lstring[1];
             em.CcAddress=lstring[2];
             em.FromAddress=lstring[3];
-            System.debug('############################From Address'+lstring[3]);
             em.FromName=lstring[4];
             em.Headers=lstring[5];
             em.ParentId=lstring[6]; // CaseID can also be used but this will help in bulk so it is used
