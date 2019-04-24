@@ -13,7 +13,7 @@ public class BulkArchive{
     public String Case_Created_Older;
     public String Case_Closed_Older;
     public Boolean arch{get;set;} //marker variable to render archive and showarchivecases and scheduleArchive Cases 
-    public Boolean rest{get;set;}
+    public Boolean rest{get;set;} //marker variable to render restore and show restore and schedule Restore cases
     public Date dat    {get;set;}
     public Time tim {get;set;}
     String hour;
@@ -59,6 +59,8 @@ public class BulkArchive{
         ldel_email.clear();
         lattach.clear();
         lemailpdf.clear();
+        //CloseDate = THIS_YEAR
+        // LAST_N_DAYS:365
         
         Query='SELECT AccountId,AssetId,CaseNumber,'+
             'ClosedDate,ContactEmail,ContactFax,ContactId,ContactMobile,ContactPhone,CreatedById,CreatedDate,'+
@@ -66,11 +68,22 @@ public class BulkArchive{
             'IsEscalated,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Origin,OwnerId,ParentId,'+
             'PotentialLiability__c,Priority,Product__c,Reason,SLAViolation__c,SourceId,Status,Subject,SuppliedCompany,'+
             'SuppliedEmail,SuppliedName,SuppliedPhone,SystemModstamp,Type FROM Case where IsArchived__c=false';
-        Case_Status=(CaseStatus=='closed'? ' AND IsClosed  = true' : ' And status =  \''+CaseStatus+'\'');
+        Case_Reason= (CaseReason=='z'? '' : ' And Reason = \''+CaseReason+ '\'');
+        Case_Status= (CaseStatus=='closed'? ' AND IsClosed  = true' : ' And status =  \''+CaseStatus+'\'');
         case_Origin=(CaseOrigin=='z'? '' : ' AND origin =  \''+CaseOrigin+'\'');
-        case_created_older=(CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
-        case_closed_older=(CaseClosedOlder=='All'? '' : ' AND ClosedDate < LAST_N_DAYS:'+CaseClosedOlder);
-        Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
+        case_created_older=(
+            CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
+        if(CaseCreatedOlder=='All')
+            case_created_older='';
+        else if(CaseCreatedOlder=='Current Year')
+        case_created_older='AND CreatedDate = THIS_YEAR';
+        else if(CaseCreatedOlder=='Last Year')
+        case_created_older='AND CreatedDate = Last_YEAR';
+        else
+        case_created_older='AND CreatedDate < LAST_N_DAYS : ' + CaseCreatedOlder;
+
+        case_closed_older=(CaseClosedOlder=='All'? '' :(CaseClosedOlder=='Last Year' ? ' And ClosedDate = LAST_YEAR' : (CaseClosedOlder=='Current Year' ? ' And ClosedDate = THIS_YEAR ' : ('AND ClosedDate < LAST_N_DAYS: '+ CaseClosedOlder))));
+        Query+=Case_Reason+Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
         
         list<case> casemap=Database.query(Query);
         
@@ -185,12 +198,25 @@ public class BulkArchive{
             'Days_Since_Last_Update__c,Description,EngineeringReqNumber__c,Id,IsArchived__c,IsClosed,IsDeleted,'+
             'IsEscalated,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Origin,OwnerId,ParentId,'+
             'PotentialLiability__c,Priority,Product__c,Reason,SLAViolation__c,SourceId,Status,Subject,SuppliedCompany,'+
-            'SuppliedEmail,SuppliedName,SuppliedPhone,SystemModstamp,Type FROM Case where IsArchived__c=False';
-        Case_Status=(CaseStatus=='closed'? ' AND IsClosed  = true' : ' AND status =  \''+CaseStatus+'\'');
+            'SuppliedEmail,SuppliedName,SuppliedPhone,SystemModstamp,Type FROM Case where IsArchived__c=false';
+        Case_Reason= (CaseReason=='z'? '' : ' And Reason = \''+CaseReason+ '\'');
+        Case_Status= (CaseStatus=='z'? '' : (CaseStatus=='closed'? ' AND IsClosed  = true' : ' And status =  \''+CaseStatus+'\''));
+        Case_Status= (CaseStatus=='closed'? ' AND IsClosed  = true' : ' And status =  \''+CaseStatus+'\'');
         case_Origin=(CaseOrigin=='z'? '' : ' AND origin =  \''+CaseOrigin+'\'');
-        case_created_older=(CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
-        case_closed_older=(CaseClosedOlder=='All'? '' : ' AND ClosedDate < LAST_N_DAYS:'+CaseClosedOlder);
-        Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
+        case_created_older=(
+            CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
+        if(CaseCreatedOlder=='All')
+            case_created_older='';
+        else if(CaseCreatedOlder=='Current Year')
+        case_created_older='AND CreatedDate = THIS_YEAR';
+        else if(CaseCreatedOlder=='Last Year')
+        case_created_older='AND CreatedDate = Last_YEAR';
+        else
+        case_created_older='AND CreatedDate < LAST_N_DAYS : ' + CaseCreatedOlder;
+
+        case_closed_older=(CaseClosedOlder=='All'? '' :(CaseClosedOlder=='Last Year' ? ' And ClosedDate = LAST_YEAR' : (CaseClosedOlder=='Current Year' ? ' And ClosedDate = THIS_YEAR ' : ('AND ClosedDate < LAST_N_DAYS: '+ CaseClosedOlder))));
+        Query+=Case_Reason+Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
+        
            
      c = Database.query(Query);
             //System.debug('################'+'abcd');  // just to check anonymous on vscode
@@ -215,12 +241,24 @@ public class BulkArchive{
             'Days_Since_Last_Update__c,Description,EngineeringReqNumber__c,Id,IsArchived__c,IsClosed,IsDeleted,'+
             'IsEscalated,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Origin,OwnerId,ParentId,'+
             'PotentialLiability__c,Priority,Product__c,Reason,SLAViolation__c,SourceId,Status,Subject,SuppliedCompany,'+
-            'SuppliedEmail,SuppliedName,SuppliedPhone,SystemModstamp,Type FROM Case where IsArchived__c=True';
-        Case_Status=(CaseStatus=='closed'? ' AND IsClosed  = true' : ' And status =  \''+CaseStatus+'\'');
+            'SuppliedEmail,SuppliedName,SuppliedPhone,SystemModstamp,Type FROM Case where IsArchived__c=true';
+        Case_Reason= (CaseReason=='z'? '' : ' And Reason = \''+CaseReason+ '\'');
+        Case_Status= (CaseStatus=='closed'? ' AND IsClosed  = true' : ' And status =  \''+CaseStatus+'\'');
         case_Origin=(CaseOrigin=='z'? '' : ' AND origin =  \''+CaseOrigin+'\'');
-        case_created_older=(CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
-        case_closed_older=(CaseClosedOlder=='All'? '' : ' AND ClosedDate < LAST_N_DAYS:'+CaseClosedOlder);
-        Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
+        case_created_older=(
+            CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
+        if(CaseCreatedOlder=='All')
+            case_created_older='';
+        else if(CaseCreatedOlder=='Current Year')
+        case_created_older='AND CreatedDate = THIS_YEAR';
+        else if(CaseCreatedOlder=='Last Year')
+        case_created_older='AND CreatedDate = Last_YEAR';
+        else
+        case_created_older='AND CreatedDate < LAST_N_DAYS : ' + CaseCreatedOlder;
+
+        case_closed_older=(CaseClosedOlder=='All'? '' :(CaseClosedOlder=='Last Year' ? ' And ClosedDate = LAST_YEAR' : (CaseClosedOlder=='Current Year' ? ' And ClosedDate = THIS_YEAR ' : ('AND ClosedDate < LAST_N_DAYS: '+ CaseClosedOlder))));
+        Query+=Case_Reason+Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
+        
         //system.debug('########################'+Query);
         lcases=Database.query(Query);
     
@@ -344,12 +382,24 @@ void del()
             'Days_Since_Last_Update__c,Description,EngineeringReqNumber__c,Id,IsArchived__c,IsClosed,IsDeleted,'+
             'IsEscalated,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Origin,OwnerId,ParentId,'+
             'PotentialLiability__c,Priority,Product__c,Reason,SLAViolation__c,SourceId,Status,Subject,SuppliedCompany,'+
-            'SuppliedEmail,SuppliedName,SuppliedPhone,SystemModstamp,Type FROM Case where IsArchived__c=True';
-        Case_Status=(CaseStatus=='closed'? ' AND IsClosed  = true' : ' AND status =  \''+CaseStatus+'\'');
+            'SuppliedEmail,SuppliedName,SuppliedPhone,SystemModstamp,Type FROM Case where IsArchived__c=true';
+        Case_Reason= (CaseReason=='z'? '' : ' And Reason = \''+CaseReason+ '\'');
+        Case_Status= (CaseStatus=='closed'? ' AND IsClosed  = true' : ' And status =  \''+CaseStatus+'\'');
         case_Origin=(CaseOrigin=='z'? '' : ' AND origin =  \''+CaseOrigin+'\'');
-        case_created_older=(CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
-        case_closed_older=(CaseClosedOlder=='All'? '' : ' AND ClosedDate < LAST_N_DAYS:'+CaseClosedOlder);
-        Query+=Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
+        case_created_older=(
+            CaseCreatedOlder=='All'? '' : ' AND CreatedDate < LAST_N_DAYS:'+CaseCreatedOlder);
+        if(CaseCreatedOlder=='All')
+            case_created_older='';
+        else if(CaseCreatedOlder=='Current Year')
+        case_created_older='AND CreatedDate = THIS_YEAR';
+        else if(CaseCreatedOlder=='Last Year')
+        case_created_older='AND CreatedDate = Last_YEAR';
+        else
+        case_created_older='AND CreatedDate < LAST_N_DAYS : ' + CaseCreatedOlder;
+
+        case_closed_older=(CaseClosedOlder=='All'? '' :(CaseClosedOlder=='Last Year' ? ' And ClosedDate = LAST_YEAR' : (CaseClosedOlder=='Current Year' ? ' And ClosedDate = THIS_YEAR ' : ('AND ClosedDate < LAST_N_DAYS: '+ CaseClosedOlder))));
+        Query+=Case_Reason+Case_Status+case_Origin+case_created_older+case_closed_older+' limit '+RecordSize;
+        
            
      c = Database.query(Query);
         

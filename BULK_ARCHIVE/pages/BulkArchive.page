@@ -17,6 +17,7 @@
     <apex:pageBlockSection >
 
             <apex:selectList label="Case Status" value="{!CaseStatus}" size="1">
+            <apex:selectOption itemValue="Z" itemLabel="None" />
             <apex:selectOption itemValue="New" itemLabel="New" />
             <apex:selectOption itemValue="Working" itemLabel="Working" />
             <apex:selectOption itemValue="Escalated" itemLabel="Escalated" />
@@ -48,8 +49,8 @@
             <apex:selectOption itemValue="30" itemLabel="30 Days" />
             <apex:selectOption itemValue="45" itemLabel="45 Days" />
             <apex:selectOption itemValue="60" itemLabel="60 Days" />
-            <apex:selectOption itemValue="Current Year" itemLabel="Current Year" />
-            <apex:selectOption itemValue="Last Year" itemLabel="Last Year" />
+            <apex:selectOption itemValue="THIS_YEAR" itemLabel="Current Year" />
+            <apex:selectOption itemValue="LAST_YEAR " itemLabel="Last Year" />
             </apex:selectList>
         
         
@@ -69,8 +70,8 @@
             <apex:selectOption itemValue="30" itemLabel="30 Days" />
             <apex:selectOption itemValue="45" itemLabel="45 Days" />
             <apex:selectOption itemValue="60" itemLabel="60 Days" />
-            <apex:selectOption itemValue="Current Year" itemLabel="Current Year" />
-            <apex:selectOption itemValue="Last Year" itemLabel="Last Year" />
+            <apex:selectOption itemValue="THIS_YEAR" itemLabel="Current Year" />
+            <apex:selectOption itemValue="LAST_YEAR" itemLabel="Last Year" />
             </apex:selectList>
         
 
